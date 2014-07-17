@@ -13,7 +13,7 @@ class Journal
   end
 
   def fetch(url)
-    page = get(url)
+    page = login(url)
     download_articles(page).each_with_index do |link, idx|
       puts "<> Downloading article #{idx.next}"
       raw_pdf = link.click.body
@@ -55,7 +55,7 @@ class Journal
     File.join(output, "output.pdf")
   end
 
-  def get(url)
+  def login(url)
     login = agent.get(url)
     form = login.forms.first
     form.username = user
@@ -65,4 +65,4 @@ class Journal
 end
 
 # url =  "http://muse.jhu.edu.proxy.lib.pdx.edu/journals/computer_music_journal/toc/cmj.38.2.html"
-# Journal.new(user, pass, url, '/Users/ereth/Desktop/')
+# Journal.new(user, pass, url, '/Users/username/Desktop/')
