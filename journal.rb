@@ -3,11 +3,12 @@ require 'bundler'
 Bundler.require(:default)
 
 class Journal
-  attr_accessor :user, :password
+  attr_accessor :user, :password, :output
 
-  def initialize(user, password, url)
-    @user     = user
-    @password = password
+  def initialize(user, password, url, output)
+    @user       = user
+    @password   = password
+    @output     = output
     fetch(url)
   end
 
@@ -17,7 +18,7 @@ class Journal
       puts "<> Downloading article #{idx.next}"
       raw_pdf = link.click.body
       File.open(pdf_file_path(idx), 'wb') { |f| f.write(raw_pdf)}
-      sleep(2)
+      sleep(3)
     end
     combine_articles
   end
@@ -44,10 +45,14 @@ class Journal
     end.join(" ")
     %x{
       gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite  \
-      -sOutputFile=/Users/ereth/Desktop/test.pdf \
+      -sOutputFile=#{output_dir} \
       -dFirstPage=2 \
       #{articles}
     }
+  end
+
+  def output_dir
+    File.join(output, "output.pdf")
   end
 
   def get(url)
@@ -59,4 +64,5 @@ class Journal
   end
 end
 
-# "http://muse.jhu.edu.proxy.lib.pdx.edu/journals/computer_music_journal/toc/cmj.38.2.html"
+# url =  "http://muse.jhu.edu.proxy.lib.pdx.edu/journals/computer_music_journal/toc/cmj.38.2.html"
+# Journal.new(user, pass, url, '/Users/ereth/Desktop/')
