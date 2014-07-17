@@ -14,7 +14,7 @@ class Journal
 
   def fetch(url)
     page = get(url)
-    download_links(page).each_with_index do |link, idx|
+    download_articles(page).each_with_index do |link, idx|
       puts "<> Downloading article #{idx.next}"
       raw_pdf = link.click.body
       File.open(pdf_file_path(idx), 'wb') { |f| f.write(raw_pdf)}
@@ -35,7 +35,7 @@ class Journal
     @agent ||= Mechanize.new
   end
 
-  def download_links(page)
+  def download_articles(page)
     page.links.map{|l| l if l.text =~ /Download/i }.compact
   end
 
